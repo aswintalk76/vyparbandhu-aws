@@ -233,14 +233,20 @@ const HomepageData = () => {
             console.log(e, 'error')
         }
     }
-    const OverWorkFlow = async (dataid, heading) => {
+    const OverWorkFlow = async (dataid, heading, image) => {
 
         let url = `${process.env.REACT_APP_PORT}/admin/home/overworkHeadingsave`
+        const myForm = new FormData();
+        myForm.append('file', image)
+        myForm.append('dataId', dataid)
+        myForm.append('heading', heading)
+        console.log(image)
+
         try {
             const response = await fetch(url, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ dataid: dataid, heading: heading })
+                // headers: { "Content-Type": "application/json" },
+                body: myForm
             });
             if (response.status === 200) {
                 toast.success("Save Data Sucesfully!")
@@ -251,14 +257,19 @@ const HomepageData = () => {
             console.log(e, 'error')
         }
     }
-    const AboutHeadingSave = async (dataid, heading, description) => {
+    const AboutHeadingSave = async (dataid, heading, description, image) => {
 
         let url = `${process.env.REACT_APP_PORT}/admin/home/abutHeadingsave`
+        const myForm = new FormData();
+        myForm.append('file', image)
+        myForm.append('dataid', dataid)
+        myForm.append('heading', heading)
+        myForm.append('description', description)
         try {
             const response = await fetch(url, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ dataid: dataid, heading: heading, description: description })
+                // headers: { "Content-Type": "application/json" },
+                body: myForm
             });
             if (response.status === 200) {
                 toast.success("Save Data Sucesfully!")
@@ -269,14 +280,18 @@ const HomepageData = () => {
             console.log(e, 'error')
         }
     }
-    const WhyHeadingSave = async (dataid, heading) => {
+    const WhyHeadingSave = async (dataid, heading, image) => {
 
         let url = `${process.env.REACT_APP_PORT}/admin/home/whyHeadingsave`
+        const myForm = new FormData();
+        myForm.append('file', image)
+        myForm.append('dataid', dataid)
+        myForm.append('heading', heading)
         try {
             const response = await fetch(url, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ dataid: dataid, heading: heading })
+                // headers: { "Content-Type": "application/json" },
+                body: myForm
             });
             if (response.status === 200) {
                 toast.success("Save Data Sucesfully!")
@@ -291,11 +306,18 @@ const HomepageData = () => {
 
         console.log(item, mainID)
         let url = `${process.env.REACT_APP_PORT}/admin/home/saveServices`
+        const myForm = new FormData();
+        myForm.append('file', item.image)
+        myForm.append('dataId', item._id)
+        myForm.append('mainID', mainID)
+        myForm.append('name', item.name)
+        myForm.append('details', item.details)
+        console.log(item.image)
         try {
             const response = await fetch(url, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ mainID: mainID, dataId: item._id, name: item.name, details: item.details })
+                // headers: { "Content-Type": "application/json" },
+                body: myForm
             });
             if (response.status === 200) {
                 toast.success("Save Data Sucesfully!")
@@ -345,11 +367,16 @@ const HomepageData = () => {
     const WhyVyparDatasave = async (mainID, item) => {
 
         let url = `${process.env.REACT_APP_PORT}/admin/home/saveWhyVypar`
+        const myForm = new FormData();
+        myForm.append('file', item.image)
+        myForm.append('dataId', item._id)
+        myForm.append('mainID', mainID)
+        myForm.append('name', item.name)
         try {
             const response = await fetch(url, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ mainID: mainID, dataId: item._id, name: item.name })
+                // headers: { "Content-Type": "application/json" },
+                body: myForm
             });
             if (response.status === 200) {
                 toast.success("Save Data Sucesfully!")
@@ -487,6 +514,7 @@ const HomepageData = () => {
                                                         <tr>
 
                                                             <th scope='col'> name</th>
+                                                            <th scope='col'> icon</th>
                                                             <th scope='col'> Details</th>
                                                             <th scope='col'>Action</th>
                                                         </tr>
@@ -504,9 +532,24 @@ const HomepageData = () => {
                                                                             <td className="col-3">
                                                                                 <div className="">
                                                                                     <div className="col-10">
+
                                                                                         <input type='text' placeholder='Name' className='form-control' value={item.name} onChange={(e) => {
 
                                                                                             const updatedQuestion = { ...item, name: e.target.value };
+                                                                                            Saveinner(main._id, item._id, updatedQuestion);
+                                                                                        }}
+                                                                                        />
+                                                                                    </div>
+                                                                                </div>
+                                                                            </td>
+                                                                            <td className="col-3">
+                                                                                <div className="">
+                                                                                    <div className="col-10">
+                                                                                        <img src={`${item.image && item.image}`} style={{ width: "150px" }} className="mb-1" alt="No Previous Image" />
+
+                                                                                        <input type='file' placeholder='Name' className='form-control' onChange={(e) => {
+
+                                                                                            const updatedQuestion = { ...item, image: e.target.files[0] };
                                                                                             Saveinner(main._id, item._id, updatedQuestion);
                                                                                         }}
                                                                                         />
@@ -572,10 +615,22 @@ const HomepageData = () => {
                                                         }} />
                                                     </div>
                                                 </div>
+                                                <div className='row mb-3 mt-2'>
+                                                    <label htmlFor='inputText' className='col-sm-2 col-form-label'> Image <span style={{ color: "red" }}>*</span></label>
+                                                    <div className='col-sm-10'>
+                                                        <img src={`${main?.workFlow?.image}`} style={{ width: "150px" }} className="mb-1" alt="No Previous Image" />
+
+                                                        <input type='file' placeholder='Enter Heading' className='form-control' onChange={(e) => {
+
+                                                            const updatedItem = { ...main, workFlow: { ...main.workFlow, image: e.target.files[0] } };
+                                                            SaveData(updatedItem);
+                                                        }} />
+                                                    </div>
+                                                </div>
                                                 <div className='row mb-3'>
                                                     <label className='col-sm-2 col-form-label'></label>
                                                     <div className='col-sm-10'>
-                                                        <button type='submit' className='btn btn-primary' onClick={() => { OverWorkFlow(main._id, main.workFlow.heading) }}>Save</button>
+                                                        <button type='submit' className='btn btn-primary' onClick={() => { OverWorkFlow(main._id, main.workFlow.heading, main.workFlow.image) }}>Save</button>
                                                     </div>
                                                 </div>
                                                 <table className='table'>
@@ -637,6 +692,18 @@ const HomepageData = () => {
                                                     </div>
                                                 </div>
                                                 <div className='row mb-3 mt-2'>
+                                                    <label htmlFor='inputText' className='col-sm-2 col-form-label'> Image <span style={{ color: "red" }}>*</span></label>
+                                                    <div className='col-sm-10'>
+                                                        <img src={`${main?.about?.image}`} style={{ width: "150px" }} className="mb-1" alt="No Previous Image" />
+
+                                                        <input type='file' placeholder='Enter Heading' className='form-control' onChange={(e) => {
+
+                                                            const updatedItem = { ...main, about: { ...main.about, image: e.target.files[0] } };
+                                                            SaveData(updatedItem);
+                                                        }} />
+                                                    </div>
+                                                </div>
+                                                <div className='row mb-3 mt-2'>
                                                     <label htmlFor='inputText' className='col-sm-2 col-form-label'> Description <span style={{ color: "red" }}>*</span></label>
                                                     <div className='col-sm-10'>
                                                         <textarea placeholder='Description' className='form-control w-100 textarea_design' value={main?.about?.description} onChange={(e) => {
@@ -649,12 +716,12 @@ const HomepageData = () => {
                                                 <div className='row mb-3'>
                                                     <label className='col-sm-2 col-form-label'></label>
                                                     <div className='col-sm-10'>
-                                                        <button type='submit' className='btn btn-primary' onClick={() => { AboutHeadingSave(main._id, main.about.heading, main.about.description) }}>Save</button>
+                                                        <button type='submit' className='btn btn-primary' onClick={() => { AboutHeadingSave(main._id, main.about.heading, main.about.description, main.about.image) }}>Save</button>
                                                     </div>
                                                 </div>
                                                 <div style={{ display: 'flex' }}>
                                                     <h5 className='card-title' style={{ fontWeight: "600" }}>Add Attributes
-                                                        <button type="button" className="btn btn-outline-primary" style={{ marginLeft: "5px" }} onClick={()=>{AddAttribute(main._id)}}>
+                                                        <button type="button" className="btn btn-outline-primary" style={{ marginLeft: "5px" }} onClick={() => { AddAttribute(main._id) }}>
                                                             <i className="bi bi-file-plus"></i>
                                                         </button>
                                                     </h5>
@@ -685,7 +752,7 @@ const HomepageData = () => {
                                                                             </td>
                                                                             <td className="col-1">
                                                                                 <div className="d-flex mt-1" style={{ gap: "5px" }}>
-                                                                                    <button type="button" className="btn btn-sm btn-primary" onClick={()=>{AboutDatasave(main._id , item)}} >Save</button>
+                                                                                    <button type="button" className="btn btn-sm btn-primary" onClick={() => { AboutDatasave(main._id, item) }} >Save</button>
 
                                                                                     <button type="button" className="btn btn-sm btn-danger" ><i className="bi bi-trash"></i></button>
                                                                                 </div>
@@ -717,11 +784,23 @@ const HomepageData = () => {
                                                         }} />
                                                     </div>
                                                 </div>
+                                                <div className='row mb-3 mt-2'>
+                                                    <label htmlFor='inputText' className='col-sm-2 col-form-label'> Image <span style={{ color: "red" }}>*</span></label>
+                                                    <div className='col-sm-10'>
+                                                        <img src={`${main?.whyvyparbandhu?.image}`} style={{ width: "150px" }} className="mb-1" alt="No Previous Image" />
+
+                                                        <input type='file' placeholder='Enter Heading' className='form-control' onChange={(e) => {
+
+                                                            const updatedItem = { ...main, whyvyparbandhu: { ...main.whyvyparbandhu, image: e.target.files[0] } };
+                                                            SaveData(updatedItem);
+                                                        }} />
+                                                    </div>
+                                                </div>
 
                                                 <div className='row mb-3'>
                                                     <label className='col-sm-2 col-form-label'></label>
                                                     <div className='col-sm-10'>
-                                                        <button type='submit' className='btn btn-primary' onClick={() => { WhyHeadingSave(main._id, main.whyvyparbandhu.heading) }}>Save</button>
+                                                        <button type='submit' className='btn btn-primary' onClick={() => { WhyHeadingSave(main._id, main.whyvyparbandhu.heading, main.whyvyparbandhu.image) }}>Save</button>
                                                     </div>
                                                 </div>
 
@@ -729,6 +808,7 @@ const HomepageData = () => {
                                                     <thead>
                                                         <tr>
                                                             <th scope='col'> Name</th>
+                                                            <th scope='col'> icon</th>
                                                             <th scope='col'>Action</th>
                                                         </tr>
                                                     </thead>
@@ -748,9 +828,21 @@ const HomepageData = () => {
                                                                                     </div>
                                                                                 </div>
                                                                             </td>
+                                                                            <td className="col-3">
+                                                                                <div className="">
+                                                                                    <div className="col-10">
+                                                                                        <img src={`${item?.image}`} style={{ width: "150px" }} className="mb-1" alt="No Previous Image" />
+
+                                                                                        <input type='file' placeholder='Name' className='form-control' onChange={(e) => {
+                                                                                            const updatedQuestion = { ...item, image: e.target.files[0] };
+                                                                                            SaveWhyVypar(main._id, item._id, updatedQuestion);
+                                                                                        }} />
+                                                                                    </div>
+                                                                                </div>
+                                                                            </td>
                                                                             <td className="col-1">
                                                                                 <div className="d-flex mt-1" style={{ gap: "5px" }}>
-                                                                                    <button type="button" className="btn btn-sm btn-primary" onClick={()=>{WhyVyparDatasave(main._id , item)}}>Save</button>
+                                                                                    <button type="button" className="btn btn-sm btn-primary" onClick={() => { WhyVyparDatasave(main._id, item) }}>Save</button>
 
                                                                                     {/* <button type="button" className="btn btn-sm btn-danger" ><i className="bi bi-trash"></i></button> */}
                                                                                 </div>

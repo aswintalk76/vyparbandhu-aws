@@ -70,8 +70,7 @@ const Requirements = ({ setActiveTab, selectServicedata, getById }) => {
     const SaveAttribute = async (item) => {
 
         console.log(item)
-        let url = "admin/service/updateRequirements";
-
+        let url = `${process.env.REACT_APP_PORT}/admin/service/updateRequirements`
         try {
             const response = await fetch(url, {
                 method: "POST",

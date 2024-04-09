@@ -80,7 +80,7 @@ const Step1 = ({ setActiveTab, selectServicedata, getById }) => {
             <div className='row mb-3'>
                 <label for='inputText' className='col-sm-2 col-form-label'>Service Details</label>
                 <div className='col-sm-10'>
-                    <textarea type='text' placeholder='Enter Service Details' className='form-control' value={Details} onChange={(e) => { setDetails(e.target.value) }} />
+                    <textarea type='text' placeholder='Enter Service Details' className='form-control textarea_design' value={Details} onChange={(e) => { setDetails(e.target.value) }} />
                 </div>
             </div>
             {

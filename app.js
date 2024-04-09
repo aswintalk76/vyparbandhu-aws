@@ -23,11 +23,6 @@ const homeroutes = require("./routes/homepageController");
 const orderroutes = require("./routes/orderController");
 const aboutroutes = require("./routes/aboutUsController");
 
-// Example route
-app.get("/", (req, res) => {
-  res.send("Server is working1!!");
-});
-
 app.use("/admin/templates", templatesroutes);
 app.use("/admin/category", catogoryroutes);
 app.use("/admin/documentlist", documentlistroutes);

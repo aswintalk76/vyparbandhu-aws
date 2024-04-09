@@ -13,31 +13,59 @@ const Step5 = ({ setActiveTab, selectServicedata, getById }) => {
     }, [selectServicedata.stepFiveData])
 
 
-
+    console.log('====================================');
+    console.log("data", data);
+    console.log('====================================');
 
     const SaveData = (updatedItem) => {
-        console.log(updatedItem)
-        setData(prevData => {
-            return prevData.map(item => {
-                // Check if item has documentsData and if so, map through it to find the matching _id
-                if (item.documentsData) {
-                    item.documentsData = item.documentsData.map(data => {
-                        if (data._id === updatedItem._id) {
-                            // Update the data with the new values
-                            const lastSlashIndex = updatedItem.document.lastIndexOf('/');
-                            const name = updatedItem.document.substring(0, lastSlashIndex);
-                            const image = updatedItem.document.substring(lastSlashIndex + 1);
-                            return { ...data, icon: image, document: name };
-                        }
-                        return data;
-                    });
-                }
-                return item;
-            });
-        });
+        const modifiedData = [...data];
+
+        modifiedData.map(item => {
+            // Check if item has documentsData and if so, map through it to find the matching _id
+            if (item.documentsData) {
+                item.documentsData.map(dataItem => {
+                    if (dataItem._id === updatedItem._id) {
+                        console.log(updatedItem, 'savedata log')
+                        // Update the data with the new values
+                        // const lastSlashIndex = updatedItem.document.lastIndexOf('/');
+                        // const name = updatedItem.document.substring(0, lastSlashIndex);
+                        // const image = updatedItem.document.substring(lastSlashIndex + 1);
+                        // return { ...data, icon: updatedItem.icon, document: item.document };
+                        dataItem.icon = updatedItem.icon
+                        dataItem.document = updatedItem.document
+                        // dataItem = {
+                        //     ...dataItem, icon: updatedItem.icon, document: item.document
+                        // }
+                    }
+                    // return data;
+                });
+            }
+            return item;
+        })
+
+        setData(modifiedData);
+
+        // setData(prevData => {
+        //     return prevData.map(item => {
+        //         // Check if item has documentsData and if so, map through it to find the matching _id
+        //         if (item.documentsData) {
+        //             item.documentsData = item.documentsData.map(data => {
+        //                 if (data._id === updatedItem._id) {
+        //                     console.log(updatedItem , 'savedata log')
+        //                     // Update the data with the new values
+        //                     // const lastSlashIndex = updatedItem.document.lastIndexOf('/');
+        //                     // const name = updatedItem.document.substring(0, lastSlashIndex);
+        //                     // const image = updatedItem.document.substring(lastSlashIndex + 1);
+        //                     return { ...data, icon: updatedItem.icon, document: item.document };
+        //                 }
+        //                 return data;
+        //             });
+        //         }
+        //         return item;
+        //     });
+        // });
     };
 
-    console.log(data)
     const getList = async () => {
         try {
             const response = await fetch(`${process.env.REACT_APP_PORT}/admin/documentlist/list`);
@@ -45,7 +73,6 @@ const Step5 = ({ setActiveTab, selectServicedata, getById }) => {
             if (response.status === 200) {
                 setDocumentList(data)
             }
-            console.log('Data receivedsetDocumentList:', data);
 
         } catch (e) {
             console.log(e, 'error')
@@ -101,9 +128,11 @@ const Step5 = ({ setActiveTab, selectServicedata, getById }) => {
 
 
 
-  
+
     const SaveAllData = async (innerId, item) => {
         let url = `${process.env.REACT_APP_PORT}/admin/service/updateDocument`
+
+        console.log(item, 'callapi')
 
         try {
             const response = await fetch(url, {
@@ -124,8 +153,7 @@ const Step5 = ({ setActiveTab, selectServicedata, getById }) => {
 
 
     const SaveDataMain = (updatedItem) => {
-        console.log(updatedItem, 'data')
-        console.log(data)
+
         setData(data.map(item => {
             if (item._id === updatedItem._id) {
                 return updatedItem;
@@ -138,7 +166,6 @@ const Step5 = ({ setActiveTab, selectServicedata, getById }) => {
 
     const SaveHeading = async (innerId, item) => {
         let url = `${process.env.REACT_APP_PORT}/admin/service/updateDocumentHeading`
-        console.log(innerId, item)
         try {
             const response = await fetch(url, {
                 method: "POST",
@@ -216,7 +243,6 @@ const Step5 = ({ setActiveTab, selectServicedata, getById }) => {
 
                                     {
                                         mainData.documentsData && mainData.documentsData.map((item, index) => {
-
                                             return (
                                                 <>
 
@@ -236,7 +262,9 @@ const Step5 = ({ setActiveTab, selectServicedata, getById }) => {
                                                             <div className="col-12 ">
                                                                 <div className='col-sm-10'>
                                                                     <select className='form-select' onChange={(e) => {
+
                                                                         const updatedItem = { ...item, document: e.target.value };
+                                                                        console.log(updatedItem, 'selectvalue')
                                                                         SaveData(updatedItem)
                                                                         // setInnerCategory(e.target.value);
                                                                     }}>
@@ -244,15 +272,14 @@ const Step5 = ({ setActiveTab, selectServicedata, getById }) => {
                                                                         {
                                                                             documentList && documentList.map((itemData, index) => {
 
-                                                                                let compare = `${itemData.name}/${itemData.image}`;
-                                                                                let second = `${item.document}/${item.icon}`;
+                                                                                let compare = `${itemData.name}`;
+                                                                                let second = `${item.document}`;
 
-                                                                                console.log(compare === second)
 
 
                                                                                 return (
                                                                                     <>
-                                                                                        <option value={`${itemData.name}/${itemData.image}`} selected={compare === second}>{itemData.name}</option>
+                                                                                        <option value={`${itemData.name}`} selected={compare === second}>{itemData.name}</option>
 
                                                                                     </>
                                                                                 )
